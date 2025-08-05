@@ -14,7 +14,6 @@ ENV ONYX_VERSION=${ONYX_VERSION} \
     DANSWER_RUNNING_IN_DOCKER="true" \
     DO_NOT_TRACK="true"
 
-
 RUN echo "ONYX_VERSION: ${ONYX_VERSION}"
 # Install system dependencies
 # cmake needed for psycopg (postgres)
@@ -41,17 +40,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-
-
 # Install Python dependencies
 # Remove py which is pulled in by retry, py is not needed and is a CVE
 COPY ./requirements/default.txt /tmp/requirements.txt
-COPY ./requirements/ee.txt /tmp/ee-requirements.txt
+
 RUN pip install --no-cache-dir --upgrade \
         --retries 5 \
         --timeout 30 \
         -r /tmp/requirements.txt \
-        -r /tmp/ee-requirements.txt && \
+        
     pip uninstall -y py && \
     playwright install chromium && \
     playwright install-deps chromium && \
@@ -95,7 +92,7 @@ nltk.download('punkt_tab', quiet=True);"
 WORKDIR /app
 
 # Enterprise Version Files
-COPY ./ee /app/ee
+
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Set up application files

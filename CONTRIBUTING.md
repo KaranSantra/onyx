@@ -105,7 +105,6 @@ Install the required python dependencies:
 ```bash
 pip install -r onyx/backend/requirements/default.txt
 pip install -r onyx/backend/requirements/dev.txt
-pip install -r onyx/backend/requirements/ee.txt
 pip install -r onyx/backend/requirements/model_server.txt
 ```
 
@@ -267,7 +266,6 @@ If you want to make changes to Onyx and run those changes in Docker, you can als
 ```bash
 docker compose -f docker-compose.dev.yml -p onyx-stack up -d --build
 ```
-
 
 ### Release Process
 
