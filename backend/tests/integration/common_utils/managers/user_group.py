@@ -2,8 +2,17 @@ import time
 from uuid import uuid4
 
 import requests
+import pytest
 
-from ee.onyx.server.user_group.models import UserGroup
+# Conditionally import EE-dependent models
+try:
+    from ee.onyx.server.user_group.models import UserGroup
+    EE_AVAILABLE = True
+except ImportError:
+    # Create a mock UserGroup class for CE mode
+    class UserGroup:
+        pass
+    EE_AVAILABLE = False
 from tests.integration.common_utils.constants import API_SERVER_URL
 from tests.integration.common_utils.constants import GENERAL_HEADERS
 from tests.integration.common_utils.constants import MAX_DELAY

@@ -1,8 +1,23 @@
 from typing import Any
 
+import pytest
 from sqlalchemy.orm import Session
 
-from ee.onyx.external_permissions.confluence.group_sync import confluence_group_sync
+# Import EE test utilities for skipping BEFORE any EE imports
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
+# Conditional EE import - only if EE is available
+if not EE_NOT_AVAILABLE:
+    from ee.onyx.external_permissions.confluence.group_sync import confluence_group_sync
+else:
+    confluence_group_sync = None
+
 from onyx.configs.constants import DocumentSource
 from onyx.connectors.models import InputType
 from onyx.db.enums import AccessType

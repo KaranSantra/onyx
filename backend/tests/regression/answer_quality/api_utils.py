@@ -1,7 +1,22 @@
+import pytest
 import requests
 from retry import retry
 
-from ee.onyx.server.query_and_chat.models import OneShotQARequest
+# Import EE test utilities for skipping BEFORE any EE imports
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
+# Conditional EE import - only if EE is available
+if not EE_NOT_AVAILABLE:
+    from ee.onyx.server.query_and_chat.models import OneShotQARequest
+else:
+    OneShotQARequest = None
+
 from onyx.chat.models import ThreadMessage
 from onyx.configs.constants import DocumentSource
 from onyx.configs.constants import MessageType

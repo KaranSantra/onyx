@@ -14,6 +14,7 @@ from threading import Semaphore
 from typing import cast
 
 import matplotlib.pyplot as plt  # type: ignore
+import pytest
 import requests
 from dotenv import load_dotenv
 from matplotlib.patches import Patch  # type: ignore
@@ -26,6 +27,15 @@ current_dir = Path(__file__).parent
 onyx_dir = current_dir.parent.parent.parent.parent
 sys.path.append(str(onyx_dir / "backend"))
 
+# Import EE test utilities for skipping BEFORE any EE imports
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
 # load env before app_config loads (since env doesn't get loaded when running as a script)
 env_path = onyx_dir / ".vscode" / ".env"
 if not env_path.exists():
@@ -37,8 +47,13 @@ load_dotenv(env_path)
 # pylint: disable=E402
 # flake8: noqa: E402
 
-from ee.onyx.server.query_and_chat.models import OneShotQARequest
-from ee.onyx.server.query_and_chat.models import OneShotQAResponse
+# Conditional EE imports - only if EE is available
+if not EE_NOT_AVAILABLE:
+    from ee.onyx.server.query_and_chat.models import OneShotQARequest
+    from ee.onyx.server.query_and_chat.models import OneShotQAResponse
+else:
+    OneShotQARequest = None
+    OneShotQAResponse = None
 from onyx.chat.models import ThreadMessage
 from onyx.configs.app_configs import POSTGRES_API_SERVER_POOL_OVERFLOW
 from onyx.configs.app_configs import POSTGRES_API_SERVER_POOL_SIZE

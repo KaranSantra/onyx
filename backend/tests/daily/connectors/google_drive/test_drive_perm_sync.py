@@ -6,8 +6,25 @@ from collections.abc import Callable
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
-from ee.onyx.external_permissions.google_drive.doc_sync import gdrive_doc_sync
-from ee.onyx.external_permissions.google_drive.group_sync import gdrive_group_sync
+import pytest
+
+# Import EE test utilities for skipping BEFORE any EE imports
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
+# Conditional EE imports - only if EE is available
+if not EE_NOT_AVAILABLE:
+    from ee.onyx.external_permissions.google_drive.doc_sync import gdrive_doc_sync
+    from ee.onyx.external_permissions.google_drive.group_sync import gdrive_group_sync
+else:
+    gdrive_doc_sync = None
+    gdrive_group_sync = None
+
 from onyx.connectors.google_drive.connector import GoogleDriveConnector
 from onyx.db.models import ConnectorCredentialPair
 from onyx.db.utils import DocumentRow
@@ -16,7 +33,6 @@ from onyx.indexing.indexing_heartbeat import IndexingHeartbeatInterface
 from tests.daily.connectors.google_drive.consts_and_utils import ACCESS_MAPPING
 from tests.daily.connectors.google_drive.consts_and_utils import ADMIN_EMAIL
 from tests.daily.connectors.google_drive.consts_and_utils import PUBLIC_RANGE
-
 
 def _build_connector(
     google_drive_service_acct_connector_factory: Callable[..., GoogleDriveConnector],

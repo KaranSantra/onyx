@@ -3,10 +3,23 @@ from unittest.mock import patch
 
 import pytest
 
-from ee.onyx.external_permissions.jira.doc_sync import jira_doc_sync
+# Import EE test utilities for skipping
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
+# Conditional EE import
+try:
+    from ee.onyx.external_permissions.jira.doc_sync import jira_doc_sync
+except ImportError:
+    jira_doc_sync = None
+
 from onyx.connectors.jira.connector import JiraConnector
 from onyx.db.models import ConnectorCredentialPair
-
 
 @pytest.fixture
 def mock_jira_cc_pair(

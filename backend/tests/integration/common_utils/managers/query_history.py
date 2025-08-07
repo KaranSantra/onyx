@@ -5,8 +5,17 @@ from uuid import UUID
 import requests
 from requests.models import CaseInsensitiveDict
 
-from ee.onyx.server.query_history.models import ChatSessionMinimal
-from ee.onyx.server.query_history.models import ChatSessionSnapshot
+# Conditional EE imports
+try:
+    from ee.onyx.server.query_history.models import ChatSessionMinimal
+    from ee.onyx.server.query_history.models import ChatSessionSnapshot
+    EE_IMPORTS_AVAILABLE = True
+except ImportError:
+    EE_IMPORTS_AVAILABLE = False
+    # Create mock objects or set to None as needed
+    ChatSessionMinimal = None
+    ChatSessionSnapshot = None
+
 from onyx.configs.constants import QAFeedbackType
 from onyx.server.documents.models import PaginatedReturn
 from tests.integration.common_utils.constants import API_SERVER_URL

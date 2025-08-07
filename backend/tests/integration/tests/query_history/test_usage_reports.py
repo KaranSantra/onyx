@@ -2,10 +2,25 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 
-from ee.onyx.db.usage_export import get_all_empty_chat_message_entries
+import pytest
+
+# Import EE test utilities for skipping BEFORE any EE imports
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
+# Conditional EE import - only if EE is available
+if not EE_NOT_AVAILABLE:
+    from ee.onyx.db.usage_export import get_all_empty_chat_message_entries
+else:
+    get_all_empty_chat_message_entries = None
+
 from onyx.db.engine.sql_engine import get_session_with_current_tenant
 from onyx.db.seeding.chat_history_seeding import seed_chat_history
-
 
 def test_usage_reports(reset: None) -> None:
     EXPECTED_SESSIONS = 2048

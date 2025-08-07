@@ -1,7 +1,20 @@
 from pydantic import BaseModel
 
-from ee.onyx.db.external_perm import ExternalUserGroup
+# Import EE test utilities for skipping
+from tests.ee_test_utils import EE_NOT_AVAILABLE
 
+# Skip this entire module due to EE dependencies
+import pytest
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
+# Conditional EE imports
+try:
+    from ee.onyx.db.external_perm import ExternalUserGroup
+except ImportError:
+    ExternalUserGroup = None
 
 class ExternalUserGroupSet(BaseModel):
     """A version of ExternalUserGroup that uses a set for user_emails to avoid order-dependent comparisons."""

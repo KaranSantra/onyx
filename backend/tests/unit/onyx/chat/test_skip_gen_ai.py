@@ -15,7 +15,15 @@ from onyx.llm.interfaces import LLM
 from onyx.llm.utils import get_max_input_tokens
 from onyx.tools.force import ForceUseTool
 from onyx.tools.tool_implementations.search.search_tool import SearchTool
-from tests.regression.answer_quality.run_qa import _process_and_write_query_results
+from tests.ee_test_utils import ee_only, EE_NOT_AVAILABLE
+
+# Conditionally import EE-dependent function
+try:
+    from tests.regression.answer_quality.run_qa import _process_and_write_query_results
+    EE_FUNCTION_AVAILABLE = True
+except ImportError:
+    _process_and_write_query_results = None
+    EE_FUNCTION_AVAILABLE = False
 
 
 @pytest.mark.parametrize(
@@ -153,6 +161,7 @@ class FinishedTestException(Exception):
     ],
 )
 @pytest.mark.skip(reason="not working")
+@pytest.mark.skipif(EE_NOT_AVAILABLE, reason="Requires Enterprise Edition")
 def test_run_qa_skip_gen_ai(
     config: dict[str, Any], questions: list[dict[str, Any]], mocker: MockerFixture
 ) -> None:

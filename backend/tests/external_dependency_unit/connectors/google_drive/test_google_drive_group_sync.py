@@ -5,10 +5,25 @@ from unittest.mock import patch
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ee.onyx.background.celery.tasks.external_group_syncing.tasks import (
-    _perform_external_group_sync,
+# Import EE test utilities for skipping
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+import pytest
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
 )
-from ee.onyx.db.external_perm import ExternalUserGroup
+
+# Conditional EE imports
+try:
+    from ee.onyx.background.celery.tasks.external_group_syncing.tasks import (
+        _perform_external_group_sync,
+    )
+    from ee.onyx.db.external_perm import ExternalUserGroup
+except ImportError:
+    _perform_external_group_sync = None
+    ExternalUserGroup = None
 from onyx.access.utils import build_ext_group_name_for_onyx
 from onyx.configs.constants import DocumentSource
 from onyx.connectors.models import InputType

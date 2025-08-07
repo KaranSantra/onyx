@@ -26,7 +26,13 @@ from tests.integration.common_utils.managers.cc_pair import CCPairManager
 from tests.integration.common_utils.managers.document import DocumentManager
 from tests.integration.common_utils.managers.document_set import DocumentSetManager
 from tests.integration.common_utils.managers.user import UserManager
-from tests.integration.common_utils.managers.user_group import UserGroupManager
+from tests.ee_test_utils import ee_only, EE_NOT_AVAILABLE
+
+# Conditionally import EE-dependent manager
+try:
+    from tests.integration.common_utils.managers.user_group import UserGroupManager
+except ImportError:
+    UserGroupManager = None
 from tests.integration.common_utils.test_models import DATestAPIKey
 from tests.integration.common_utils.test_models import DATestUser
 from tests.integration.common_utils.test_models import DATestUserGroup
@@ -37,8 +43,11 @@ def test_connector_deletion(reset: None, vespa_client: vespa_fixture) -> None:
     user_group_1: DATestUserGroup
     user_group_2: DATestUserGroup
 
+    # Use both environment variable and import-based EE detection
     is_ee = (
         os.environ.get("ENABLE_PAID_ENTERPRISE_EDITION_FEATURES", "").lower() == "true"
+        and not EE_NOT_AVAILABLE
+        and UserGroupManager is not None
     )
 
     # Creating an admin user (first user created is automatically an admin)
@@ -232,8 +241,11 @@ def test_connector_deletion_for_overlapping_connectors(
     user_group_1: DATestUserGroup
     user_group_2: DATestUserGroup
 
+    # Use both environment variable and import-based EE detection
     is_ee = (
         os.environ.get("ENABLE_PAID_ENTERPRISE_EDITION_FEATURES", "").lower() == "true"
+        and not EE_NOT_AVAILABLE
+        and UserGroupManager is not None
     )
 
     # Creating an admin user (first user created is automatically an admin)

@@ -5,7 +5,21 @@ from unittest.mock import patch
 
 import pytest
 
-from ee.onyx.external_permissions.confluence.doc_sync import confluence_doc_sync
+# Import EE test utilities for skipping BEFORE any EE imports
+from tests.ee_test_utils import EE_NOT_AVAILABLE
+
+# Skip this entire module due to EE dependencies
+pytestmark = pytest.mark.skipif(
+    EE_NOT_AVAILABLE,
+    reason="This test module depends on Enterprise Edition functionality"
+)
+
+# Conditional EE import - only if EE is available
+if not EE_NOT_AVAILABLE:
+    from ee.onyx.external_permissions.confluence.doc_sync import confluence_doc_sync
+else:
+    confluence_doc_sync = None
+
 from onyx.configs.constants import DocumentSource
 from onyx.connectors.confluence.connector import ConfluenceConnector
 from onyx.connectors.credentials_provider import OnyxStaticCredentialsProvider
@@ -13,7 +27,6 @@ from onyx.db.models import ConnectorCredentialPair
 from onyx.db.utils import DocumentRow
 from onyx.db.utils import SortOrder
 from tests.daily.connectors.utils import load_all_docs_from_checkpoint_connector
-
 
 @pytest.fixture
 def confluence_connector() -> ConfluenceConnector:

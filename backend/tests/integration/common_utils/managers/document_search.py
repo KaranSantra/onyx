@@ -1,6 +1,14 @@
 import requests
 
-from ee.onyx.server.query_and_chat.models import DocumentSearchRequest
+# Conditional EE imports
+try:
+    from ee.onyx.server.query_and_chat.models import DocumentSearchRequest
+    EE_IMPORTS_AVAILABLE = True
+except ImportError:
+    EE_IMPORTS_AVAILABLE = False
+    # Create mock objects or set to None as needed
+    DocumentSearchRequest = None
+
 from onyx.context.search.enums import LLMEvaluationType
 from onyx.context.search.enums import SearchType
 from onyx.context.search.models import RetrievalDetails
