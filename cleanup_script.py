@@ -13,7 +13,8 @@ def remove_directories():
     """Remove the first two directories specified in scratchpad.txt"""
     directories_to_remove = [
         "web/src/app/ee",
-        "backend/ee"
+        "backend/ee",
+        "backend/tests/unit/ee"
     ]
     
     for dir_path in directories_to_remove:

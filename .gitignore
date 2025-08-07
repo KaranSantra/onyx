@@ -30,4 +30,6 @@ jira_test_env
 # ee folders
 web/src/app/ee
 backend/ee
+backend/tests/unit/ee
+
 final_review_gate.py
